@@ -14,10 +14,13 @@ var express             = require("express"),
 var commentRoutes       = require("./routes/comments"),
     campgroundRoutes    = require("./routes/campgrounds"),
     authRoutes          = require("./routes/index");
-    
+
+console.log(process.env.DATABASEURL);   
 mongoose.Promise = global.Promise;
-// mongoose.connect("mongodb://localhost/yelp_camp");
-mongoose.connect("mongodb://Nadia:645260@ds041536.mlab.com:41536/yelpcamp");
+mongoose.connect(process.env.DATABASEURL);
+// mongoose.connect("mongodb://Nadia:645260@ds041536.mlab.com:41536/yelpcamp");
+
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 
