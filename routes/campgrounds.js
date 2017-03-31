@@ -1,7 +1,8 @@
 var express     = require("express"),
     router      = express.Router(),
     Campground  = require("../models/campground"),
-    middleware  = require("../middleware/index.js");
+    middleware  = require("../middleware/index.js"),
+    geocoder    = require("geocoder");
 
 
 // Index = shows all campgrounds
@@ -27,7 +28,12 @@ router.post("/", middleware.isLoggedIn, function(req, res){
                     id: req.user._id,
                     username: req.user.username
             };
-        var newCampground = {name: name,price:price, image: image, description: description, author: author};
+        geocoder.geocode(req.body.location, function (err, data){
+            var lat      = data.results[0].geometry.location.lat,
+                lng      = data.results[0].geometry.location.lng,
+                location = data.results[0].formatted_address;
+      
+        var newCampground = {name: name, price:price, location: location, lat: lat, lng: lng, image: image, description: description, author: author};
     //   Create a new campground and save to db
     Campground.create(newCampground, function(err, newlyCreated){
         if(err){
@@ -37,6 +43,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
         res.redirect("/campgrounds");
         }
     });
+});
 });
 
 // NEW -- Form to add camprounds
@@ -65,15 +72,23 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) 
 
 // Update Campground Route
 router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
-    // Find an update the correct campground
-    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
+     geocoder.geocode(req.body.location, function (err, data){
+        var lat      = data.results[0].geometry.location.lat,
+            lng      = data.results[0].geometry.location.lng,
+            location = data.results[0].formatted_address,
+            newData  = {name: req.body.campground.name, image: req.body.campground.image, description: req.body.campgound.description, price: req.body.campgound.price, location: location, lat: lat, lng: lng};
+        // Find an update the correct campground
+    Campground.findByIdAndUpdate(req.params.id, {$set: newData}, function(err, campground){
         if(err){
-            res.redirect("/campgrounds");
+            req.flash("error", err.message);
+            res.redirect("back");
         } else{
               // Redirect to show page  // Redirect to show page
-            res.redirect("/campgrounds/" + req.params.id);
+            req.flash("success", "Successfully updated");
+            res.redirect("/campgrounds/" + campground._id);
         }
     });
+});
 });
 
 // Destroy/Delete Campground
