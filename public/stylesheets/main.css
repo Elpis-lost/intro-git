@@ -9,5 +9,9 @@
 #delete-form{
      display: inline;
      float: right;
-     
  }
+ 
+#map{
+    height: 400px;
+    width: 100%;
+}
