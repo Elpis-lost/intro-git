@@ -1,6 +1,7 @@
 var express     = require("express"),
     router      = express.Router(),
     Campground  = require("../models/campground"),
+    Comment     = require("../models/comment"),
     middleware  = require("../middleware/index.js"),
     geocoder    = require("geocoder");
 
@@ -72,11 +73,11 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) 
 
 // Update Campground Route
 router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
-     geocoder.geocode(req.body.location, function (err, data){
+     geocoder.geocode(req.body.campground.location, function (err, data){
         var lat      = data.results[0].geometry.location.lat,
             lng      = data.results[0].geometry.location.lng,
             location = data.results[0].formatted_address,
-            newData  = {name: req.body.campground.name, image: req.body.campground.image, description: req.body.campgound.description, price: req.body.campgound.price, location: location, lat: lat, lng: lng};
+            newData  = {name: req.body.campground.name, image: req.body.campground.image, description: req.body.campground.description, price: req.body.campground.price, location: location, lat: lat, lng: lng};
         // Find an update the correct campground
     Campground.findByIdAndUpdate(req.params.id, {$set: newData}, function(err, campground){
         if(err){
