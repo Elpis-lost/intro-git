@@ -1,11 +1,16 @@
 <% include ./partials/header %>
-
-<h1>Sign-up!!</h1>
-
-<form action="/register" method="POST">
-    <input name="username" type="text" placeholder="username">
-    <input name="password" type="password" placeholder="password">
-    <button>Sign-Up</button>
-</form>
+    <h1 style="text-align: center">Sign Up</h1>
+    <div style="wisth: 30%; margin: 25px auto">
+        <form action="/register" method="post">
+            <div class="form-control" types="text" name="username" placeholder="username">
+            </div>
+            <div class="form-control" types="password" name="password" placeholder="password">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary btn-block">Sig Up</button>
+            </div>
+        </form>
+        <a href="campgrounds">Back to Campgrounds</a>
+    </div>
 
 <% include ./partials/footer %>

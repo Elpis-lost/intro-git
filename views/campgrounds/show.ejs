@@ -1,5 +1,4 @@
 <% include ../partials/header %>
-<div class="container">
     <div class="row">
         <div class="col-md-3">
             <p class="lead">YelpCamp</p>
@@ -19,7 +18,7 @@
                     <p> <%= campground.description%></p>
                     <p>
                         <em>Submitted By <%= campground.author.username%></em>
-                         <span class="pull-right"><%=moment(campground.createdAt).fromNow()%></span>
+                        <span class="pull-right"><%=moment(campground.createdAt).fromNow()%></span>
                     </p>
                     <% if (currentUser && campground.author.id.equals(currentUser._id)){%>
                         <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id%>/edit">Edit</a>
@@ -33,10 +32,11 @@
                 <div class="text-right">
                     <a class="btn btn-sm btn-info" href="/campgrounds/<%= campground._id%>/comments/new">Add a Comment</a>
                 </div>
+                <hr>
                 <% campground.comments.forEach(function(comment){%>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong>Submitted By <%= comment.author.username %></strong>  
+                            <strong><%= comment.author.username %></strong>  
                             <span class="pull-right"><%=moment(campground.createdAt).fromNow()%></span>
                             <p>
                                 <%= comment.text %>
@@ -47,19 +47,17 @@
                                 <input type="submit" class="btn btn-xs btn-danger" value="Delete">
                             </form>
                             <% } %>
+                            <hr>
                          </div>    
                     </div>
                 <% }) %>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container">
     <div class="pull-right">
         <a class="btn btn-md btn-primary" href="/campgrounds">Back to the Campgrounds List</a>
     </div>
-</div>
 
 <script>
     function initMap() {
