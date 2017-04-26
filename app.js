@@ -5,11 +5,15 @@ var express             = require("express"),
     flash               = require("connect-flash"),
     Campground          = require("./models/campground"),
     Comment             = require("./models/comment"),
+    cookieParser        = require("cookie-parser"),
     passport            = require("passport"),
     LocalStrategy       = require("passport-local"),
     methodOverride      = require("method-override"),
     seedDB              = require("./seeds"),
     User                = require("./models/user");
+
+// configure dotenv
+require("dotenv").load();
 
 // Requiring Routes
 var commentRoutes       = require("./routes/comments"),
@@ -29,7 +33,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(methodOverride("_method"));
 
-app.use(flash());
+app.use(cookieParser("secret"));
 
 // seedDB(); //seed the database
 app.locals.moment = require("moment");
@@ -42,6 +46,7 @@ app.use(require("express-session")({
     saveUninitialized: false
 }));
 
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
