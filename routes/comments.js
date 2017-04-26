@@ -75,15 +75,25 @@ router.put("/:comment_id", middleware.checkCommentOwnership, function(req, res){
 
 router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, res){
     //findByIdAndRemove
-    Comment.findByIdAndRemove(req.params.comment_id, function(err){
+    Comment.findByIdAndRemove(req.params.comment_id, function(err, comment){
        if(err){
            res.redirect("back");
        } else {
-           req.flash("success", "Comment deleted")
-           res.redirect("/campgrounds/" + req.params.id);
-       }
+           Campground.findByIdAndUpdate(req.params.id,{
+               $pull: {
+                   comments: comment.id
+               }
+           }, function(err){
+               if(err){
+                   console.log(err)
+               }else {
+                   req.flash("success", "Comment deleted")
+                   res.redirect("/campgrounds/" + req.params.id);
+                }
+            });
+            }
+        });
     });
-});
 
 // middleware
 
